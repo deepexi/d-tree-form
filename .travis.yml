@@ -1,28 +1,17 @@
-branches:
-  only:
-    - master
+  
 language: node_js
 node_js:
 - lts/*
-git:
-  depth: 3
 install:
-- yarn --frozen-lockfile
-- yarn test
+- yarn
 script:
-- ./build.sh
-after_success:
-- GREN_GITHUB_TOKEN=$GITHUB_TOKEN yarn release
-after_script:
-- ./notify.sh
+- yarn test
 cache: yarn
 deploy:
-- provider: pages
-  local-dir: docs
-  github-token: $GITHUB_TOKEN
-  skip-cleanup: true
-  keep-history: true
-- provider: npm
-  email: levy9527@qq.com
-  api_key: $NPM_TOKEN
+  provider: npm
+  email: git@hexie.uu.me
+  api_key:
+    secure:  25dd0695-c28a-4cee-8d66-eea3da22d9f0
+  on:
+    branch: master
   skip-cleanup: true
