@@ -31,7 +31,9 @@ const sections = (() => {
       sectionDepth: 2
     },
     ...(faq ? [faq] : []),
-    ...(guides.length ? [{name: 'Guide', sections: guides, sectionDepth: 2}] : [])
+    ...(guides.length
+      ? [{name: 'Guide', sections: guides, sectionDepth: 2}]
+      : [])
   ]
 })()
 
@@ -69,5 +71,6 @@ module.exports = {
       ]
     },
     plugins: [new VueLoaderPlugin()]
-  }
+  },
+  require: ['./styleguide/element.js']
 }
