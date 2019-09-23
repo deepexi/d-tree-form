@@ -92,7 +92,7 @@ export default {
      * 作用于 el-tree 的 prop，参考
      * @see https://element.eleme.cn/#/zh-CN/component/tree
      */
-    treeProps：{
+    treeProps: {
       type: Object,
       default() {
         return {}
