@@ -1,12 +1,12 @@
 {
-  "name": "d-form",
+  "name": "d-tree-form",
   "version": "1.0.0",
   "description": "",
   "author": "https://github.com/deepexi",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/deepexi/d-form.git"
+    "url": "https://github.com/deepexi/d-tree-form.git"
   },
   "keywords": [
     "vue",
@@ -17,20 +17,20 @@
     "src",
     "dist"
   ],
-  "main": "dist/d-form.umd.js",
-  "module": "dist/d-form.esm.js",
-  "unpkg": "dist/d-form.min.js",
+  "main": "dist/d-tree-form.umd.js",
+  "module": "dist/d-tree-form.esm.js",
+  "unpkg": "dist/d-tree-form.min.js",
   "browser": {
-    "./sfc": "src/d-form.vue"
+    "./sfc": "src/d-tree-form.vue"
   },
   "scripts": {
     "dev": "vue-styleguidist server",
     "test": "jest --verbose",
     "doc": "vue-styleguidist build",
     "build": "npm run build:unpkg & npm run build:es & npm run build:umd & npm run doc",
-    "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/d-form.umd.js",
-    "build:es": "rollup --config build/rollup.config.js --format es --file dist/d-form.esm.js",
-    "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/d-form.min.js",
+    "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/d-tree-form.umd.js",
+    "build:es": "rollup --config build/rollup.config.js --format es --file dist/d-tree-form.esm.js",
+    "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/d-tree-form.min.js",
     "stdver": "standard-version -m '[skip ci] chore(release): v%s'",
     "release": "gren release --override"
   },
@@ -42,6 +42,7 @@
     "@babel/plugin-transform-runtime": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "babel-loader": "^8.0.5",
+    "babel-plugin-component": "^1.1.1",
     "file-loader": "^3.0.1",
     "github-release-notes": "^0.17.0",
     "glob": "^7.1.3",

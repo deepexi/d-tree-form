@@ -41,7 +41,7 @@ module.exports = {
   styleguideDir: 'docs',
   pagePerSection: true,
   ribbon: {
-    url: 'https://github.com/deepexi/d-form'
+    url: 'https://github.com/deepexi/d-tree-form'
   },
   sections,
   webpackConfig: {

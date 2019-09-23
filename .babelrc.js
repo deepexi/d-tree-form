@@ -5,7 +5,14 @@ module.exports = api => {
       [
         '@babel/transform-runtime',
         {
-          regenerator: true,
+          regenerator: true
+        }
+      ],
+      [
+        'component',
+        {
+          libraryName: 'element-ui',
+          styleLibraryName: 'theme-chalk'
         }
       ]
     ]
