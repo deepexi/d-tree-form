@@ -3,11 +3,12 @@
 ```vue
 <template>
   <div>
-    <d-form
-      ref="dForm"
+    <d-tree-form
+      ref="dTreeForm"
       :cliParams="cliParams"
       :formProps="formProps"
-    ></d-form>
+      :treeProps="treeProps"
+    ></d-tree-form>
     <div>
       <el-button @click="getValues">获取提交的值</el-button>
     </div>
@@ -18,7 +19,7 @@
 export default {
   methods: {
     getValues() {
-      console.dir(this.$refs.dForm.flatFormValue)
+      console.dir(this.$refs.dTreeForm.getFlatFormData())
       alert('请打开控制台查看')
     }
   },
@@ -27,6 +28,7 @@ export default {
       formProps: {
         labelWidth: '150px',
       },
+      treeProps: {},
       cliParams: {
         "groupId": {
           "type": "input",
@@ -64,7 +66,7 @@ export default {
             "none"
           ],
           "message": "请选择你使用的对象映射类型",
-          "default": "none"
+          "default": "none",
         },
         "db": {
           "type": "list",
@@ -86,11 +88,18 @@ export default {
               "default": "none",
               "trigger": [
                 {
-                  "type": "anyAnswerTrigger",
+                  "type": "answerTrigger",
                   "answer": "db",
                   "value": [
                     "mysql",
                     "mongo"
+                  ]
+                },
+                {
+                  "type": "answerTrigger",
+                  "answer": "discovery",
+                  "value": [
+                    "zookeeper"
                   ]
                 }
               ]
@@ -103,17 +112,6 @@ export default {
               ],
               "message": "请选择你使用的ORM框架",
               "default": "none",
-              "child": {
-                "rrr": {
-                  "type": "list",
-                  "choices": [
-                    "mybatis-plus",
-                    "none"
-                  ],
-                  "message": "请选择你使用的ORM框架",
-                  "default": "none",
-                }
-              }
             }
           }
         },
