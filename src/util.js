@@ -1,4 +1,4 @@
-const NONE = 'none'
+export const NONE = 'none'
 
 // 映射脚手架的类型
 const typeMap = {
@@ -7,35 +7,39 @@ const typeMap = {
   input: 'input'
 }
 
-function anyAnswerTrigger(answer, value) {
-  return value.includes(answer)
-}
-
-const triggerFns = {
-  anyAnswerTrigger
-}
-
-function parseTrigger(triggers) {
-  if (!triggers) return true
-  const results = triggers.map(trigger => {
-    return triggerFns[trigger.type](trigger.answer, trigger.value)
-  })
-  return !results.includes(false)
-}
-
-function generateSelectOptions(child, choices) {
-  if (!choices) return null
-
-  return choices.map(choice => {
-    return {
-      label: choice,
-      value: choice,
-      childNodes: choice !== NONE ? transform2FormData(child) : null
+const formData = {}
+const cliParamsFlattenData = {}
+export function flatCliParams(cliParams, parentKey) {
+  Object.keys(cliParams).forEach(key => {
+    const value = cliParams[key]
+    formData[key] = value.default
+    cliParamsFlattenData[key] = value
+    if (parentKey) {
+      cliParamsFlattenData[key].parentKey = parentKey
+    }
+    const child = cliParams[key].child
+    if (child) {
+      return flatCliParams(child, key)
     }
   })
+  return {
+    formData,
+    cliParamsFlattenData
+  }
 }
 
-function generateNode(parent, key, value) {
+export function transform2TreeFormData(cliParams) {
+  if (!cliParams) return null
+  const treeForm = []
+  Object.keys(cliParams).forEach(key => {
+    const value = cliParams[key]
+    const node = generateNode(cliParams, key, value)
+    treeForm.push(node)
+  })
+  return treeForm
+}
+
+export function generateNode(parent, key, value) {
   return {
     prop: key,
     label: key,
@@ -46,32 +50,27 @@ function generateNode(parent, key, value) {
     componentProps: {
       placeholder: value.message
     },
-    rules: [{required: !!value.required, message: value.message}]
+    rules: [{required: !!value.required, message: value.message}],
+    trigger: value.trigger,
+    children: value.child
+      ? Object.keys(value.child)
+          .map(key => {
+            return generateNode(parent, key, value.child[key])
+          })
+          .filter(child => {
+            return !child.trigger || !child.trigger.length
+          })
+      : []
   }
 }
 
-export function transform2FormData(cliParams) {
-  if (!cliParams) return null
-  const dynamicForm = []
-  Object.keys(cliParams).forEach(key => {
-    const value = cliParams[key]
-    const shouldHasChild = parseTrigger(value.trigger)
-    if (!shouldHasChild) {
-      delete cliParams[key]
-      return
-    }
-    const node = generateNode(cliParams, key, value)
-    dynamicForm.push(node)
-  })
-  return dynamicForm
-}
+function generateSelectOptions(child, choices) {
+  if (!choices) return null
 
-export function flat(sourceForm, formObj) {
-  sourceForm.forEach(({prop, value, children}) => {
-    if (children && children.length) {
-      flat(children, formObj)
+  return choices.map(choice => {
+    return {
+      label: choice,
+      value: choice
     }
-    formObj[prop] = value
   })
-  return formObj
 }

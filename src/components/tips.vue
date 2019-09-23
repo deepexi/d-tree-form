@@ -14,7 +14,7 @@ export default {
 }
 </script>
 <style lang="less">
-.d-form {
+.d-tree-form {
   .helper-tips-content {
     max-width: 270px;
     text-align: justify;
