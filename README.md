@@ -1,9 +1,9 @@
 # d-tree-form
 
 [![Build Status](https://badgen.net/travis/deepexi/d-tree-form/master)](https://travis-ci.com/deepexi/d-tree-form)
-[![NPM Download](https://badgen.net/npm/dm/@deepexi/d-tree-form)](https://www.npmjs.com/package/@deepexi/d-tree-form)
-[![NPM Version](https://badgen.net/npm/v/@deepexi/d-tree-form)](https://www.npmjs.com/package/@deepexi/d-tree-form)
-[![NPM License](https://badgen.net/npm/license/@deepexi/d-tree-form)](https://github.com/deepexi/d-tree-form/blob/master/LICENSE)
+[![NPM Download](https://badgen.net/npm/dm/d-tree-form)](https://www.npmjs.com/package/d-tree-form)
+[![NPM Version](https://badgen.net/npm/v/d-tree-form)](https://www.npmjs.com/package/d-tree-form)
+[![NPM License](https://badgen.net/npm/license/d-tree-form)](https://github.com/deepexi/d-tree-form/blob/master/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/deepexi/d-tree-form/pulls)
 [![Automated Release Notes by gren](https://img.shields.io/badge/%F0%9F%A4%96-release%20notes-00B2EE.svg)](https://github-tools.github.io/github-release-notes/)
 
