@@ -30,7 +30,6 @@
             <el-input
               v-model="formData[data.prop]"
               v-bind="data.componentProps"
-              :disabled="disabled"
             >
             </el-input>
           </template>
@@ -41,7 +40,6 @@
               resize="none"
               v-model="formData[data.prop]"
               v-bind="data.componentProps"
-              :disabled="disabled"
             ></el-input>
           </template>
 
@@ -50,7 +48,6 @@
               v-model="formData[data.prop]"
               v-bind="data.componentProps"
               @change="onSelectChange(data)"
-              :disabled="disabled"
             >
               <el-option
                 v-for="item in data.options"
@@ -63,7 +60,7 @@
           </template>
 
           <template v-if="data.type === 'radio'">
-            <el-radio-group v-model="formData[data.prop]" :disabled="disabled">
+            <el-radio-group v-model="formData[data.prop]">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
@@ -93,13 +90,6 @@ export default {
     [RadioGroup.name]: RadioGroup
   },
   props: {
-    /**
-     * 是否禁用所有的整个表单
-     */
-    disabled: {
-      type: Boolean,
-      default: false
-    },
     /**
      * 用于已经有外部 formData 数据
      * 如果有值，则不会通过 cliParams 转化成 formData
