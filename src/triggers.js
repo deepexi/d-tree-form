@@ -1,9 +1,9 @@
-function answerTrigger(answer, value, formData) {
+function anyAnswerTrigger(answer, value, formData) {
   return value.includes(formData[answer])
 }
 
 export const triggerFns = {
-  answerTrigger
+  anyAnswerTrigger
 }
 
 export function parseTrigger(triggers, formData) {
