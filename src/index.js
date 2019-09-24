@@ -1,11 +1,29 @@
 // Import vue component
-import Component from './d-form.vue'
+import Component from './d-tree-form.vue'
+import {
+  Form,
+  Tree,
+  Input,
+  Radio,
+  Select,
+  FormItem,
+  Option,
+  RadioGroup
+} from 'element-ui'
 
 // install function executed by Vue.use()
 export function install(Vue) {
   if (install.installed) return
   install.installed = true
-  Vue.component('DForm', Component)
+  Vue.use(Form)
+  Vue.use(Tree)
+  Vue.use(Input)
+  Vue.use(Radio)
+  Vue.use(Select)
+  Vue.use(FormItem)
+  Vue.use(Option)
+  Vue.use(RadioGroup)
+  Vue.component('DTreeForm', Component)
 }
 
 // Create module definition for Vue.use()

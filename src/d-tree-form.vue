@@ -1,14 +1,14 @@
 <template>
   <el-form
-    ref="dForm"
-    :model="flatFormValue"
-    class="d-form"
+    ref="dTreeForm"
+    :model="formData"
+    class="d-tree-form"
     :style="styles"
     v-bind="formProps"
   >
     <el-tree
-      v-show="formData.length"
-      :data="formData"
+      v-show="treeFormData.length"
+      :data="treeFormData"
       :default-expand-all="true"
       v-bind="treeProps"
     >
@@ -27,7 +27,10 @@
             ></helper-tips>
           </span>
           <template v-if="data.type === 'input'">
-            <el-input v-model="data.value" v-bind="data.componentProps">
+            <el-input
+              v-model="formData[data.prop]"
+              v-bind="data.componentProps"
+            >
             </el-input>
           </template>
 
@@ -35,14 +38,14 @@
             <el-input
               type="textarea"
               resize="none"
-              v-model="data.value"
+              v-model="formData[data.prop]"
               v-bind="data.componentProps"
             ></el-input>
           </template>
 
           <template v-if="data.type === 'select'">
             <el-select
-              v-model="data.value"
+              v-model="formData[data.prop]"
               v-bind="data.componentProps"
               @change="onSelectChange(data)"
             >
@@ -57,7 +60,7 @@
           </template>
 
           <template v-if="data.type === 'radio'">
-            <el-radio-group v-model="data.value">
+            <el-radio-group v-model="formData[data.prop]">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
@@ -70,10 +73,11 @@
 
 <script>
 import HelperTips from './components/tips.vue'
-import {transform2FormData, flat} from './util'
+import {flatCliParams, transform2TreeFormData, generateNode, NONE} from './util'
+import {parseTrigger} from './triggers.js'
 
 export default {
-  name: 'DForm',
+  name: 'DTreeForm',
   components: {
     HelperTips
   },
@@ -119,55 +123,61 @@ export default {
   },
   data() {
     return {
-      formData: []
+      formData: {},
+      cliParamsFlattenData: {},
+      treeFormData: []
     }
   },
   watch: {
     cliParams: {
       immediate: true,
+      deep: true,
       handler(val) {
-        this.formData = (val && transform2FormData(val)) || []
+        const {formData, cliParamsFlattenData} = flatCliParams(val)
+        const treeFormData = transform2TreeFormData(val)
+        this.formData = formData
+        this.cliParamsFlattenData = cliParamsFlattenData
+        this.treeFormData = treeFormData
       }
-    }
-  },
-  computed: {
-    /**
-     * @computed 扁平化的表单数据
-     */
-    flatFormValue() {
-      return flat(this.formData, {})
     }
   },
   methods: {
-    onSelectChange(data) {
-      let {value, children, options} = data
-      let currentOption = options.filter(option => {
-        return option.value === value
-      })
-
-      const childNodes = currentOption.length
-        ? currentOption[0].childNodes
-        : null
-
-      if (!children) {
-        this.$set(data, 'children', [])
-      }
-
-      if (childNodes && childNodes.length) {
-        if (data.children.length) {
-          return
+    getFlatFormData() {
+      const cloneFormData = JSON.parse(JSON.stringify(this.formData))
+      Object.keys(cloneFormData).forEach(key => {
+        const parent = this.cliParamsFlattenData[key]
+        const parentKey = parent.parentKey
+        const parentValue = cloneFormData[parentKey]
+        if (!parseTrigger(parent.trigger, cloneFormData)) {
+          delete cloneFormData[key]
         }
-        data.children = [...JSON.parse(JSON.stringify(childNodes))]
-      } else {
-        data.children = []
-      }
+      })
+      return cloneFormData
+    },
+    onSelectChange(data) {
+      const formDataValue = this.formData[data.prop]
+      let children = []
+      Object.keys(this.cliParamsFlattenData).forEach(key => {
+        const param = this.cliParamsFlattenData[key]
+        const shouldShow = parseTrigger(param.trigger, this.formData)
+        this.treeFormData.forEach(treeFormItem => {
+          if (shouldShow && treeFormItem.prop === param.parentKey) {
+            if (!treeFormItem.children) {
+              this.$set(treeFormItem, 'children', [])
+            }
+            const childNode = generateNode({}, key, param)
+            children.push(childNode)
+            treeFormItem.children = children
+          }
+        })
+      })
     }
   }
 }
 </script>
 
 <style lang="less">
-.d-form {
+.d-tree-form {
   .el-tree-node__content {
     height: 60px;
 
