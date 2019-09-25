@@ -1,3 +1,4 @@
+import {parseTrigger} from './triggers.js'
 export const NONE = 'none'
 
 // 映射脚手架的类型
@@ -7,39 +8,54 @@ const typeMap = {
   input: 'input'
 }
 
-const formData = {}
-const cliParamsFlattenData = {}
-export function flatCliParams(cliParams, parentKey) {
+function goTransform2FlatCliParams(cliParams, cliParamsFlattenData, parentKey) {
   Object.keys(cliParams).forEach(key => {
     const value = cliParams[key]
-    formData[key] = value.default
     cliParamsFlattenData[key] = value
     if (parentKey) {
       cliParamsFlattenData[key].parentKey = parentKey
     }
     const child = cliParams[key].child
     if (child) {
-      return flatCliParams(child, key)
+      return goTransform2FlatCliParams(child, cliParamsFlattenData, key)
     }
   })
-  return {
-    formData,
-    cliParamsFlattenData
-  }
+}
+export function transform2FlatCliParams(cliParams) {
+  const cliParamsFlattenData = {}
+  goTransform2FlatCliParams(cliParams, cliParamsFlattenData)
+  return cliParamsFlattenData
 }
 
-export function transform2TreeFormData(cliParams) {
+function goTransform2FormData(cliParams, formData) {
+  Object.keys(cliParams).forEach(key => {
+    const value = cliParams[key]
+    formData[key] = value.default
+    const child = cliParams[key].child
+    if (child) {
+      return goTransform2FormData(child, formData)
+    }
+  })
+}
+
+export function transform2FormData(cliParams) {
+  const formData = {}
+  goTransform2FormData(cliParams, formData)
+  return formData
+}
+
+export function transform2TreeFormData(cliParams, formData) {
   if (!cliParams) return null
   const treeForm = []
   Object.keys(cliParams).forEach(key => {
     const value = cliParams[key]
-    const node = generateNode(cliParams, key, value)
+    const node = generateNode(key, value, formData)
     treeForm.push(node)
   })
   return treeForm
 }
 
-export function generateNode(parent, key, value) {
+export function generateNode(key, value, formData) {
   return {
     prop: key,
     label: key,
@@ -50,15 +66,15 @@ export function generateNode(parent, key, value) {
     componentProps: {
       placeholder: value.message
     },
-    rules: [{required: !!value.required, message: value.message}],
+    rules: [{required: !!value.require, message: value.message}],
     trigger: value.trigger,
     children: value.child
       ? Object.keys(value.child)
           .map(key => {
-            return generateNode(parent, key, value.child[key])
+            return generateNode(key, value.child[key])
           })
           .filter(child => {
-            return !child.trigger || !child.trigger.length
+            return parseTrigger(child.trigger, formData)
           })
       : []
   }

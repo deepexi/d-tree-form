@@ -73,15 +73,33 @@
 
 <script>
 import HelperTips from './components/tips.vue'
-import {flatCliParams, transform2TreeFormData, generateNode, NONE} from './util'
+import {
+  transform2TreeFormData,
+  transform2FlatCliParams,
+  transform2FormData,
+  generateNode,
+  NONE
+} from './util'
 import {parseTrigger} from './triggers.js'
+import {RadioGroup} from 'element-ui'
 
 export default {
   name: 'DTreeForm',
   components: {
-    HelperTips
+    HelperTips,
+    [RadioGroup.name]: RadioGroup
   },
   props: {
+    /**
+     * 用于已经有外部 formData 数据
+     * 如果有值，则不会通过 cliParams 转化成 formData
+     */
+    formModelData: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
     /**
      * 作用于 el-form 的 prop，参考
      * @see https://element.eleme.cn/#/zh-CN/component/form
@@ -129,14 +147,20 @@ export default {
     }
   },
   watch: {
+    formModelData(val) {
+      this.formData = val
+    },
     cliParams: {
-      immediate: true,
+      // immediate: true,
       deep: true,
-      handler(val) {
-        const {formData, cliParamsFlattenData} = flatCliParams(val)
-        const treeFormData = transform2TreeFormData(val)
-        this.formData = formData
+      handler(cliParams) {
+        if (Object.keys(this.formModelData).length <= 0) {
+          const formData = transform2FormData(cliParams)
+          this.formData = formData
+        }
+        const cliParamsFlattenData = transform2FlatCliParams(cliParams)
         this.cliParamsFlattenData = cliParamsFlattenData
+        const treeFormData = transform2TreeFormData(cliParams, this.formData)
         this.treeFormData = treeFormData
       }
     }
@@ -155,20 +179,16 @@ export default {
       return cloneFormData
     },
     onSelectChange(data) {
-      const formDataValue = this.formData[data.prop]
-      let children = []
-      Object.keys(this.cliParamsFlattenData).forEach(key => {
-        const param = this.cliParamsFlattenData[key]
-        const shouldShow = parseTrigger(param.trigger, this.formData)
-        this.treeFormData.forEach(treeFormItem => {
-          if (shouldShow && treeFormItem.prop === param.parentKey) {
-            if (!treeFormItem.children) {
-              this.$set(treeFormItem, 'children', [])
-            }
-            const childNode = generateNode({}, key, param)
+      this.treeFormData.forEach(treeFormItem => {
+        let children = []
+        Object.keys(this.cliParamsFlattenData).forEach(key => {
+          const cliParam = this.cliParamsFlattenData[key]
+          const shouldShow = parseTrigger(cliParam.trigger, this.formData)
+          if (shouldShow && treeFormItem.prop === cliParam.parentKey) {
+            const childNode = generateNode(key, cliParam, this.formData)
             children.push(childNode)
-            treeFormItem.children = children
           }
+          treeFormItem.children = children
         })
       })
     }
