@@ -61,8 +61,8 @@
 
           <template v-if="data.type === 'radio'">
             <el-radio-group v-model="formData[data.prop]">
-              <el-radio :label="true">是</el-radio>
-              <el-radio :label="false">否</el-radio>
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
             </el-radio-group>
           </template>
         </el-form-item>
