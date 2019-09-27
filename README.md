@@ -1,6 +1,6 @@
 # d-tree-form
 
-[![Build Status](https://badgen.net/travis/deepexi/d-tree-form/master)](https://travis-ci.com/deepexi/d-tree-form)
+[![Build Status](https://travis-ci.org/deepexi/d-tree-form.svg?branch=master)](https://travis-ci.com/deepexi/d-tree-form)
 [![NPM Download](https://badgen.net/npm/dm/d-tree-form)](https://www.npmjs.com/package/d-tree-form)
 [![NPM Version](https://badgen.net/npm/v/d-tree-form)](https://www.npmjs.com/package/d-tree-form)
 [![NPM License](https://badgen.net/npm/license/d-tree-form)](https://github.com/deepexi/d-tree-form/blob/master/LICENSE)
