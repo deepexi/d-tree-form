@@ -1,17 +1,23 @@
   
 language: node_js
 node_js:
-- lts/*
+  - lts/*
 install:
-- yarn
+  - yarn --frozen-lockfile
 script:
-- yarn test
+  - node --version
+  - echo "Testing Started ..."
+  - yarn test
+  - echo "Testing Finished."
+  - echo "Building Started ..."
+  - yarn build
+  - echo "Building Finished."
 cache: yarn
 deploy:
   provider: npm
   email: git@hexie.uu.me
-  api_key:
-    secure:  25dd0695-c28a-4cee-8d66-eea3da22d9f0
+  api_key: "$NPM_TOKEN"
+  skip_cleanup: true
   on:
-    branch: master
-  skip-cleanup: true
+    branche: master
+    
