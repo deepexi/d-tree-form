@@ -1,6 +1,8 @@
 import {parseTrigger} from './triggers.js'
 export const NONE = 'none'
 
+const CONFIRM = 'confirm'
+
 // 映射脚手架的类型
 const typeMap = {
   confirm: 'radio',
@@ -30,7 +32,7 @@ export function transform2FlatCliParams(cliParams) {
 function goTransform2FormData(cliParams, formData) {
   Object.keys(cliParams).forEach(key => {
     const value = cliParams[key]
-    formData[key] = value.default
+    formData[key] = parseValue(value.default, value.type)
     const child = cliParams[key].child
     if (child) {
       return goTransform2FormData(child, formData)
@@ -61,8 +63,8 @@ export function generateNode(key, value, formData) {
     label: key,
     type: typeMap[value.type],
     options: generateSelectOptions(value.child, value.choices),
-    value: value.default,
-    tooltips: value.tips,
+    value: parseValue(value.default, value.type),
+    tooltips: value.type === CONFIRM ? value.tips || value.message : value.tips,
     componentProps: {
       placeholder: value.message
     },
@@ -89,4 +91,11 @@ function generateSelectOptions(child, choices) {
       value: choice
     }
   })
+}
+
+function parseValue(defaultValue, type) {
+  if (type === CONFIRM && typeof defaultValue === 'boolean') {
+    return defaultValue ? 1 : 0
+  }
+  return defaultValue
 }
