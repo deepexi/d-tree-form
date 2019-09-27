@@ -64,7 +64,7 @@ export function generateNode(key, value, formData) {
     type: typeMap[value.type],
     options: generateSelectOptions(value.child, value.choices),
     value: parseValue(value.default, value.type),
-    tooltips: value.type === CONFIRM ? value.message : value.tips,
+    tooltips: value.type === CONFIRM ? value.tips || value.message : value.tips,
     componentProps: {
       placeholder: value.message
     },
