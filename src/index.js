@@ -8,7 +8,8 @@ import {
   Select,
   FormItem,
   Option,
-  RadioGroup
+  RadioGroup,
+  Tooltip
 } from 'element-ui'
 
 // install function executed by Vue.use()
@@ -23,6 +24,7 @@ export function install(Vue) {
   Vue.use(FormItem)
   Vue.use(Option)
   Vue.use(RadioGroup)
+  Vue.use(Tooltip)
   Vue.component('DTreeForm', Component)
 }
 
