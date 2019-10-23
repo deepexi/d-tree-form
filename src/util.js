@@ -86,6 +86,12 @@ function generateSelectOptions(child, choices) {
   if (!choices) return null
 
   return choices.map(choice => {
+    if (isObject(choice)) {
+      return {
+        label: choice.display,
+        value: choice.key
+      }
+    }
     return {
       label: choice,
       value: choice
@@ -98,4 +104,8 @@ function parseValue(defaultValue, type) {
     return defaultValue ? 1 : 0
   }
   return defaultValue
+}
+
+function isObject(target) {
+  return typeof target !== null && typeof target === 'object'
 }
